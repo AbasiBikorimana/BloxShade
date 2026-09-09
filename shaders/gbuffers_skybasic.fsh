@@ -1,5 +1,7 @@
 #version 120
 
+#include "lib/settings.glsl"
+
 uniform float viewHeight;
 uniform float viewWidth;
 uniform mat4 gbufferModelView;
@@ -30,6 +32,10 @@ void main() {
 		pos = gbufferProjectionInverse * pos;
 		color = calcSkyColor(normalize(pos.xyz));
 	}
+	
+	#if BLACK_SKY == 1
+		color = vec3(0.0);
+	#endif
 
 /* DRAWBUFFERS:0 */
 	gl_FragData[0] = vec4(color, 1.0); //gcolor

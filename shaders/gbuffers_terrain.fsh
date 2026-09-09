@@ -1,5 +1,9 @@
 #version 120
 
+#include "lib/settings.glsl"
+#include "lib/color_adjustments.glsl"
+
+
 #define COLORED_SHADOWS 1 //0: Stained glass will cast ordinary shadows. 1: Stained glass will cast colored shadows. 2: Stained glass will not cast any shadows. [0 1 2]
 #define SHADOW_BRIGHTNESS 0.75 //Light levels are multiplied by this number when the surface is in shadows [0.00 0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00]
 
@@ -23,10 +27,12 @@ const bool shadowtex1Nearest = true;
 //since that has to be declared in the fragment stage in order to do anything.
 #include "/distort.glsl"
 
-void main() {
+void main() 
+{
 	vec4 color = texture2D(texture, texcoord) * glcolor;
 	vec2 lm = lmcoord;
-	if (shadowPos.w > 0.0) {
+	if (shadowPos.w > 0.0) 
+	{
 		//surface is facing towards shadowLightPosition
 		#if COLORED_SHADOWS == 0
 			//for normal shadows, only consider the closest thing to the sun,
@@ -39,13 +45,15 @@ void main() {
 			//surface is in shadows. reduce light level.
 			lm.y *= SHADOW_BRIGHTNESS;
 		}
-		else {
+		else 
+		{
 			//surface is in direct sunlight. increase light level.
 			lm.y = mix(31.0 / 32.0 * SHADOW_BRIGHTNESS, 31.0 / 32.0, sqrt(shadowPos.w));
 			#if COLORED_SHADOWS == 1
 				//when colored shadows are enabled and there's nothing OPAQUE between us and the sun,
 				//perform a 2nd check to see if there's anything translucent between us and the sun.
-				if (texture2D(shadowtex0, shadowPos.xy).r < shadowPos.z) {
+				if (texture2D(shadowtex0, shadowPos.xy).r < shadowPos.z) 
+				{
 					//surface has translucent object between it and the sun. modify its color.
 					//if the block light is high, modify the color less.
 					vec4 shadowLightColor = texture2D(shadowcolor0, shadowPos.xy);
@@ -60,6 +68,9 @@ void main() {
 		}
 	}
 	color *= texture2D(lightmap, lm);
+	
+	color.rgb = greyscale(color.rgb, TERRAIN_GREY_AMOUNT);
+
 
 /* DRAWBUFFERS:0 */
 	gl_FragData[0] = color; //gcolor
