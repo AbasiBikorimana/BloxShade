@@ -9,3 +9,10 @@
 #define RED_ENTITIES 0 // [0 1]
 
 #define TERRAIN_GREY_AMOUNT 0.0 //[0.0 0.25 0.5 0.75 1.0]
+
+#define LIGHTING_STYLE 0 // [0 1 2] 0 = vanilla lighting, 1 = smooth lighting, 2 = something else
+
+
+#define TORCH_R 0.0 //[0.0 0.25 0.5 0.75 1.0]
+#define TORCH_G 0.0 //[0.0 0.25 0.5 0.75 1.0]
+#define TORCH_B 0.0 //[0.0 0.25 0.5 0.75 1.0]

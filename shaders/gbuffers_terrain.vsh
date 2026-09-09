@@ -12,6 +12,7 @@ varying vec2 lmcoord;
 varying vec2 texcoord;
 varying vec4 glcolor;
 varying vec4 shadowPos;
+varying vec3 normals_face;
 
 #include "/distort.glsl"
 
@@ -19,6 +20,8 @@ void main() {
 	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmcoord  = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	glcolor = gl_Color;
+
+	normals_face = normalize(gl_NormalMatrix * gl_Normal);
 
 	float lightDot = dot(normalize(shadowLightPosition), normalize(gl_NormalMatrix * gl_Normal));
 	#ifdef EXCLUDE_FOLIAGE
