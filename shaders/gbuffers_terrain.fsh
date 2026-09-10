@@ -15,12 +15,19 @@ uniform sampler2D texture;
 
 uniform float sunAngle;
 uniform vec3 shadowLightPosition;
+uniform float fogStart;
+uniform float fogEnd;
+uniform vec3 fogColor;
+uniform float far;
+uniform float rainStrength;
+
 
 varying vec2 lmcoord;
 varying vec2 texcoord;
 varying vec4 glcolor;
 varying vec4 shadowPos;
 varying vec3 normals_face;
+varying vec3 viewPos_v3;
 
 
 //fix artifacts when colored shadows are enabled
@@ -100,11 +107,16 @@ void main()
 		float lightDot = clamp(dot(normalize(shadowLightPosition), normals_face), 0.0, 1.0);
 
 		color.rgb = color.rgb * (torch_color * lm.x + texture2D(lightmap, lm).y*lm.y + lightDot);
-
 	#endif
 
 
 	color.rgb = greyscale(color.rgb, TERRAIN_GREY_AMOUNT);
+
+	//fog color
+	float borderFogAmount = clamp((distance(vec3(0.0), viewPos_v3) - (far - BORDER_FOG_START * far)) / (BORDER_FOG_START * far),0.0, 1.0);
+	float fogAmount = clamp(max(clamp((distance(vec3(0.0), viewPos_v3) - FOG_START) / (FOG_END - FOG_START),0.0, FOG_MAX), borderFogAmount) * (1.0 + rainStrength),0.0, 1.0);
+	color.rgb = mix(color.rgb, fogColor, fogAmount);
+
 
 
 /* DRAWBUFFERS:0 */

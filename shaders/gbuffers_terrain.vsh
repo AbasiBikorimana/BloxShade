@@ -13,6 +13,7 @@ varying vec2 texcoord;
 varying vec4 glcolor;
 varying vec4 shadowPos;
 varying vec3 normals_face;
+varying vec3 viewPos_v3;
 
 #include "/distort.glsl"
 
@@ -31,6 +32,7 @@ void main() {
 	#endif
 
 	vec4 viewPos = gl_ModelViewMatrix * gl_Vertex;
+	viewPos_v3 = viewPos.xyz;
 	if (lightDot > 0.0) { //vertex is facing towards the sun
 		vec4 playerPos = gbufferModelViewInverse * viewPos;
 		shadowPos = shadowProjection * (shadowModelView * playerPos); //convert to shadow ndc space.
