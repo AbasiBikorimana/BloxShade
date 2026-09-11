@@ -101,13 +101,13 @@ void main()
 
 	#endif
 
-	#if LIGHTING_STYLE = 2 
+	#if LIGHTING_STYLE == 2 
 		float lightDot = clamp(dot(normalize(shadowLightPosition), normals_face), 0.0, 1.0);
 
 		color.rgb = color.rgb * (torch_color * lm.x + texture2D(lightmap, lm).y*lm.y + lightDot);
 	#endif
 
-	#if IS_IS_TERRAIN == 1
+	#if IS_TERRAIN == 1
 		color.rgb = greyscale(color.rgb, TERRAIN_GREY_AMOUNT);
 	#endif
 

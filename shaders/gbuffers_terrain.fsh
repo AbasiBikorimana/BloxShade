@@ -1,4 +1,4 @@
 #version 120
 
-#define IS_TERRAIN
+#define IS_TERRAIN 1
 #include "main_f.glsl"
