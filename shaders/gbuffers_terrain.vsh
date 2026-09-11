@@ -6,6 +6,11 @@ uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 shadowModelView;
 uniform mat4 shadowProjection;
+
+uniform int worldTime;
+uniform vec3 cameraPosition;
+in vec2 mc_midTexCoord;
+
 uniform vec3 shadowLightPosition;
 
 varying vec2 lmcoord;
@@ -32,6 +37,27 @@ void main() {
 	#endif
 
 	vec4 viewPos = gl_ModelViewMatrix * gl_Vertex;
+
+		//wavy leaves
+	if (mc_Entity.x == 10001.0)
+	{
+		vec4 world_pos = gbufferModelViewInverse * vec4(viewPos.xyz, 1.0);
+		world_pos.xyz += cameraPosition;
+		world_pos.xy = world_pos.xy + sin(worldTime * 0.05)*0.1 + sin(worldTime * 0.09) * 0.1;
+		viewPos = gbufferModelView * vec4(world_pos.xyz - cameraPosition, 1.0);
+	};
+	//grass waving
+	if (mc_Entity.x == 10002.0)
+	{
+		if (texcoord.y < mc_midTexCoord.y)
+		{
+			vec4 world_pos = gbufferModelViewInverse * vec4(viewPos.xyz, 1.0);
+			world_pos.xyz += cameraPosition;
+			world_pos.xy = world_pos.xy + sin(worldTime * 0.05)*0.1 + sin(worldTime * 0.07) * 0.1;
+			viewPos = gbufferModelView * vec4(world_pos.xyz - cameraPosition, 1.0);
+		}
+	}
+
 	viewPos_v3 = viewPos.xyz;
 	if (lightDot > 0.0) { //vertex is facing towards the sun
 		vec4 playerPos = gbufferModelViewInverse * viewPos;
@@ -55,4 +81,5 @@ void main() {
 	}
 	shadowPos.w = lightDot;
 	gl_Position = gl_ProjectionMatrix * viewPos;
+
 }
