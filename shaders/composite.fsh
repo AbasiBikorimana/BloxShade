@@ -20,8 +20,6 @@ void main() {
 	color = make_green(color, GREEN_AMOUNT);
 	color = make_blue(color, BLUE_AMOUNT);
 
-	//color = greyscale(color, GREY_AMOUNT);
-
 /* DRAWBUFFERS:0 */
 	gl_FragData[0] = vec4(color, 1.0); //gcolor
 }
