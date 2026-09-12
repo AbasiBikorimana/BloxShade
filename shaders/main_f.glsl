@@ -10,6 +10,8 @@ uniform sampler2D shadowcolor0;
 uniform sampler2D shadowtex0;
 uniform sampler2D shadowtex1;
 uniform sampler2D texture;
+uniform sampler2D normals;
+
 
 uniform float sunAngle;
 uniform vec3 shadowLightPosition;
@@ -25,6 +27,7 @@ varying vec2 texcoord;
 varying vec4 glcolor;
 varying vec4 shadowPos;
 varying vec3 normals_face;
+varying vec3 tangent_face;
 varying vec3 viewPos_v3;
 
 
@@ -85,7 +88,7 @@ void main()
 	
 	vec3 torch_color = vec3(TORCH_R, TORCH_G, TORCH_B);
 
-	#if LIGHTING_STYLE = 1 //smooth
+	#if LIGHTING_STYLE == 1 //smooth
 		color.rgb = color.rgb * (torch_color * lm.x + texture2D(lightmap, lm). y * lm.y);
 
 		color *= texture2D(lightmap, lm);
@@ -102,7 +105,19 @@ void main()
 	#endif
 
 	#if LIGHTING_STYLE == 2 
-		float lightDot = clamp(dot(normalize(shadowLightPosition), normals_face), 0.0, 1.0);
+
+		vec3 bitangent = cross(tangent_face.xyz, normals_face.xyz);
+		mat3 tbn_matrix = mat3(tangent_face.xyz, bitangent.xyz, normals_face.xyz);
+
+		vec4 normals_texture = texture2D(normals, texcoord);
+
+		normals_texture.xy = normals_texture.xy * 2.0 - 1.0;
+
+		normals_texture.z = sqrt(1.0 - dot(normals_texture.xy, normals_texture.xy)); //reconstruct z 
+
+		normals_texture.xyz = tbn_matrix * normals_texture.xyz;
+
+		float lightDot = clamp(dot(normalize(shadowLightPosition), normals_texture.xyz), 0.0, 1.0);
 
 		color.rgb = color.rgb * (torch_color * lm.x + texture2D(lightmap, lm).y*lm.y + lightDot);
 	#endif
@@ -121,6 +136,18 @@ void main()
 		color.rgb = vec3(1.0,0.0,0.0); 
 	#endif
 
+
+	#if DEBUG_VIEW == 1
+		color.rgb = normals_face.xyz * 0.5 + 0.5;
+	#endif
+
+	#if DEBUG_VIEW == 2
+		color.rgb = texture2D(normals, texcoord).rgb * 0.5 + 0.5;
+	#endif
+
+	#if DEBUG_VIEW == 3
+		color.rgb = normals_texture.xyz * 0.5 + 0.5;
+	#endif
 
 
 

@@ -3,6 +3,7 @@
 #include "/lib/settings.glsl"
 
 attribute vec4 mc_Entity;
+attribute vec4 at_tangent;
 
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
@@ -20,6 +21,7 @@ varying vec2 texcoord;
 varying vec4 glcolor;
 varying vec4 shadowPos;
 varying vec3 normals_face;
+varying vec3 tangent_face;
 varying vec3 viewPos_v3;
 
 void main() {
@@ -28,6 +30,8 @@ void main() {
 	glcolor = gl_Color;
 
 	normals_face = normalize(gl_NormalMatrix * gl_Normal);
+	tangent_face = normalize(gl_NormalMatrix * at_tangent.xyz) * at_tangent.w;
+
 
 	float lightDot = dot(normalize(shadowLightPosition), normalize(gl_NormalMatrix * gl_Normal));
 	#ifdef EXCLUDE_FOLIAGE
@@ -68,7 +72,7 @@ void main() {
 		shadowPos.xyz = distort(shadowPos.xyz); //apply shadow distortion
 		shadowPos.xyz = shadowPos.xyz * 0.5 + 0.5; //convert from -1 ~ +1 to 0 ~ 1
 		//apply shadow bias.
-		#ifdef NORMAL_BIAS
+		#ifdef NORMAL_BIASbut 
 			//we are allowed to project the normal because shadowProjection is purely a scalar matrix.
 			//a faster way to apply the same operation would be to multiply by shadowProjection[0][0].
 			vec4 normal = shadowProjection * vec4(mat3(shadowModelView) * (mat3(gbufferModelViewInverse) * (gl_NormalMatrix * gl_Normal)), 1.0);

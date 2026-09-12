@@ -22,3 +22,5 @@
 #define BORDER_FOG_START 0.75 // [0.5 0.75 0.8 0.85 0.9]
 
 #define WAVING_PLANTS
+
+#define DEBUG_VIEW 0 // [0 1 2 3]
