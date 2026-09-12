@@ -1,6 +1,15 @@
 # BloxShade
-Personal study for shaders using minecraft!
 
+Personal study for shaders using Minecraft!
 
-# Requires 
-https://www.curseforge.com/minecraft/modpacks/distant-horizons-iris-shaders
+## Requirements
+
+- Minecraft 26.1.2
+- Fabric API
+- Iris 1.11.3
+- Sodium 0.9.1
+- Distant Horizons 26.1.2
+
+## Optional
+
+- Patrix Resource Pack
