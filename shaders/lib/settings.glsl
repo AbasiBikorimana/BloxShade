@@ -23,4 +23,6 @@
 
 #define WAVING_PLANTS
 
+#define CLOUD_STYLE 0 // [0 1]
+ 
 #define DEBUG_VIEW 0 // [0 1 2 3]
